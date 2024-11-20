@@ -99,6 +99,13 @@ public class VirtualMemory {
 				frameNumber=frame;
 				pageTable[page_number]=frame;
 				invertedPageTable[frame]=page_number;
+				for(int i=0;i<pageTable.length;i++) {
+					if(i!=page_number) {
+						if(pageTable[i]==frame) {
+							pageTable[i]=-1;
+						}
+					}
+				}
 				update_tlb(page_number,frame);
 				System.out.println("Page fault: The page "+ page_number+ " has been loaded into the frame "+ frame);
 				
@@ -107,26 +114,29 @@ public class VirtualMemory {
 		}
 		return frameNumber;
 	}
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Enter the number of pages: ");
-		int noPages = sc.nextInt();
-		System.out.print("Enter the number of Frames: ");
-		int noFrames = sc.nextInt();
-		System.out.print("Enter the tlb sized: ");
-		int tlbSize = sc.nextInt();
-		VirtualMemory mmu= new VirtualMemory(noPages,noFrames,tlbSize);
-		for(int i=0;i<100;i++) {
-			int pageNumber=(int)(Math.random()*noPages);
-			int offset=(int)(Math.random()*PAGE_SIZE);
-			int logicalAddress=pageNumber* PAGE_SIZE + offset;
-			int frameNumber=mmu.search_page_table(pageNumber);
-			int physicalAddress=frameNumber*PAGE_SIZE+offset;
-			System.out.println("Logical address "+logicalAddress+" => Physical address "+physicalAddress);
-			System.out.println("Number hits "+mmu.getTlb_hits());
-			System.out.println("num Faults "+mmu.getPage_faults());
-			
-			
-		} 
+	public String printTlb() {
+		String output="The TLB currently: \n Page#  ";
+		for(TLB_Entry t:tlb) {
+			output+=t.getPageNumber()+"  ";
+		}
+		output+="\n Frame# ";
+		for(TLB_Entry t:tlb) {
+			output+=t.getFrameNumber()+"  ";
+		}
+		return output;
 	}
+	public String printPageTable() {
+		String output ="The page table currently:\n Page#  ";
+		for(int i=0;i<pageTable.length;i++) {
+			output+= i +"  ";
+		}
+		output+="\n Frame# ";
+		for(int j: pageTable) {
+			output+= j + "  ";
+		}
+		
+		
+		return output;
+	}
+	
 }
