@@ -1,0 +1,15 @@
+Memory:
+File handling
+Create Class for Process
+Move parts of VirtualMemory to Process Class
+Create step method similar to nextB() 
+-------------------------------------------
+GUI:
+Parts needed to be displayed:
+      Memory/Frames
+      TLB
+      Page Table
+      Processes
+      Performance Stats
+         Faults/Hits
+         Ratios
