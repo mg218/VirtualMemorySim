@@ -1,6 +1,8 @@
 package vMem;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class VirtualMemory {
@@ -9,14 +11,14 @@ public class VirtualMemory {
 	public int numPages; // number of pages
 	public int numFrames; // number of frames
 	public int tlbSize; // number of entries in the TLB
-
-	private int[] pageTable; // map from page# (index) to frame#(value)
-	private int[] invertedPageTable; // map frame# (index) to page#(value)
+	public List<Process> procList = new ArrayList<Process>();
+	protected Process curProcess;
 	private TLB_Entry[] tlb; // list of TLB entries
 	private int nextLoadLocation = 0; // next frame index to load the new page
 	private int next_free_tlb_index = 0; // index of next free TLB entry
 	private int page_faults = 0; // number of page faults
 	private int tlb_hits = 0; // number of TLB hits
+	private MEMORY_ENTRY[] memory;
 
 	public int getPage_faults() {
 		return page_faults;
@@ -27,16 +29,17 @@ public class VirtualMemory {
 	}
 
 	// constructor
-	public VirtualMemory(int numPages, int numFrames, int tlbSize) {
+	public VirtualMemory(int numPages, int numFrames, int tlbSize,List<Process> procList) {
 		// TODO: add code below
 		this.numPages = numPages;
 		this.numFrames = numFrames;
 		this.tlbSize = tlbSize;
-		// setup page table and the inverted one
-		this.pageTable = new int[numPages];
-		Arrays.fill(pageTable, -1);
-		this.invertedPageTable = new int[numFrames];
-		Arrays.fill(invertedPageTable, -1);
+		this.curProcess=procList.get(0);
+		this.procList=procList;
+		memory=new MEMORY_ENTRY[numFrames];	
+		for(int i=0;i<memory.length;i++) {
+			memory[i]= new MEMORY_ENTRY(null,-1);
+		}
 		// set up the TLB
 		tlb = new TLB_Entry[tlbSize];
 		for (int i = 0; i < tlbSize; i++) {
@@ -44,6 +47,21 @@ public class VirtualMemory {
 
 		}
 
+	}
+	
+	
+	
+	public void step() {
+		int pageNumber=(int)(Math.random()*numPages);
+		int offset=(int)(Math.random()*PAGE_SIZE);
+		int logicalAddress=pageNumber* PAGE_SIZE + offset;
+		int frameNumber=search_page_table(pageNumber);
+		int physicalAddress=frameNumber*PAGE_SIZE+offset;
+		System.out.println("Logical address "+logicalAddress+" => Physical address "+physicalAddress);
+		System.out.println("Number of TLB hits "+getTlb_hits());
+		System.out.println("Number of Faults "+getPage_faults());
+		System.out.println(printAllPageTable());
+		System.out.println(printTlb());
 	}
 
 	// search if page number in tlb or not
@@ -78,7 +96,7 @@ public class VirtualMemory {
 			
 		}else {//miss
 			//search entry on the page table
-			frameNumber=pageTable[page_number];
+			frameNumber=curProcess.pageTable[page_number];
 			if(frameNumber>=0) {
 				System.out.println("Page hit: The page "+ page_number+ " has been loaded into the frame "+ frameNumber);
 			}else {//Page Fault
@@ -86,7 +104,7 @@ public class VirtualMemory {
 				//try to find any free frame
 				int frame=-1;
 				for(int f=0;f<numFrames;f++) {
-					if(invertedPageTable[f]==-1) {
+					if(memory[f].val==-1) {
 						frame=f;
 						break;
 					}
@@ -97,12 +115,13 @@ public class VirtualMemory {
 				}
 				//update page table
 				frameNumber=frame;
-				pageTable[page_number]=frame;
-				invertedPageTable[frame]=page_number;
-				for(int i=0;i<pageTable.length;i++) {
+				curProcess.pageTable[page_number]=frame;
+				memory[frame].val=page_number;
+				memory[frame].proc=curProcess;
+				for(int i=0;i<curProcess.pageTable.length;i++) {
 					if(i!=page_number) {
-						if(pageTable[i]==frame) {
-							pageTable[i]=-1;
+						if(curProcess.pageTable[i]==frame) {
+							curProcess.pageTable[i]=-1;
 						}
 					}
 				}
@@ -125,18 +144,15 @@ public class VirtualMemory {
 		}
 		return output;
 	}
-	public String printPageTable() {
-		String output ="The page table currently:\n Page#  ";
-		for(int i=0;i<pageTable.length;i++) {
-			output+= i +"  ";
+	public String printAllPageTable() {
+		String output="Page Tables: \n";
+		for(Process p:procList) {
+			output+= p.getID()+": \n"+p.printPageTable()+"\n";
 		}
-		output+="\n Frame# ";
-		for(int j: pageTable) {
-			output+= j + "  ";
-		}
-		
 		
 		return output;
+		
 	}
+
 	
 }
