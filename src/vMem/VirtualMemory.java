@@ -18,7 +18,9 @@ public class VirtualMemory {
 	private int next_free_tlb_index = 0; // index of next free TLB entry
 	private int page_faults = 0; // number of page faults
 	private int tlb_hits = 0; // number of TLB hits
-	private MEMORY_ENTRY[] memory;
+	private MEMORY_ENTRY[] memory; 
+	public static final int QUANTUM=4;
+	private int procCount;
 
 	public int getPage_faults() {
 		return page_faults;
@@ -36,6 +38,7 @@ public class VirtualMemory {
 		this.tlbSize = tlbSize;
 		this.curProcess=procList.get(0);
 		this.procList=procList;
+		this.procCount=0;
 		memory=new MEMORY_ENTRY[numFrames];	
 		for(int i=0;i<memory.length;i++) {
 			memory[i]= new MEMORY_ENTRY(null,-1);
@@ -62,6 +65,8 @@ public class VirtualMemory {
 		System.out.println("Number of Faults "+getPage_faults());
 		System.out.println(printAllPageTable());
 		System.out.println(printTlb());
+		System.out.println(printMem());
+		updateProc();
 	}
 
 	// search if page number in tlb or not
@@ -118,10 +123,18 @@ public class VirtualMemory {
 				curProcess.pageTable[page_number]=frame;
 				memory[frame].val=page_number;
 				memory[frame].proc=curProcess;
-				for(int i=0;i<curProcess.pageTable.length;i++) {
-					if(i!=page_number) {
-						if(curProcess.pageTable[i]==frame) {
-							curProcess.pageTable[i]=-1;
+				for(Process p: procList) {
+					for(int i=0;i<p.pageTable.length;i++) {
+						if(p==curProcess) {
+							if(i!=page_number) {
+								if(p.pageTable[i]==frame) {
+									p.pageTable[i]=-1;
+								}
+							}
+						}else {
+							if(p.pageTable[i]==frame) {
+								p.pageTable[i]=-1;
+							}
 						}
 					}
 				}
@@ -152,6 +165,46 @@ public class VirtualMemory {
 		
 		return output;
 		
+	}
+	public String printMem() {
+		String output="Memory table: \nFrame#: ";
+		for(int i=0;i<memory.length;i++) {
+			output+= i+" ";
+		}
+		output+="\nProcess: ";
+		for(MEMORY_ENTRY m:memory) {
+			if(m.proc!=null) {
+				output+=m.proc.getID()+" ";
+			}else {
+				output+=-1+" ";
+			}
+		}
+		output+="\nValue: ";
+		for (MEMORY_ENTRY m : memory) {
+			output+=m.val+" ";
+		}
+		
+		return output;
+	}
+	public void updateProc() {
+		procCount++;
+		procCount = procCount%QUANTUM;
+		if(procCount==0) {
+			resetTLB();
+			if(procList.indexOf(curProcess)==procList.size()-1) {
+				curProcess=procList.get(0);
+			}else {
+				curProcess=procList.get(procList.indexOf(curProcess)+1);
+			}
+		}
+	}
+	public void resetTLB() {
+		next_free_tlb_index=0;
+		for(TLB_Entry e:tlb) {
+			e.setFrameNumber(-1);
+			e.setPageNumber(-1);
+			e.setValid(false);
+		}
 	}
 
 	
