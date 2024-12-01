@@ -8,7 +8,7 @@ public class TLB_Entry {
 	public TLB_Entry(int pageNumber, int frameNumber, boolean valid) {
 		this.pageNumber = pageNumber;
 		this.frameNumber = frameNumber;
-		this.frameNumber = frameNumber;
+		this.valid=valid;
 	}
 
 	public int getPageNumber() {

@@ -1,8 +1,6 @@
 Memory:
-File handling
-Create Class for Process
-Move parts of VirtualMemory to Process Class
-Create step method similar to nextB() 
+File reading
+Create enums for actions/status 
 -------------------------------------------
 GUI:
 Parts needed to be displayed:
