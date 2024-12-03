@@ -47,28 +47,38 @@ public class SimulatorThread implements Runnable {
 
   //field variable setters
 
-  public void setSpeed(int speed) {
+  public Void setSpeed(Integer speed) {
     speedMS = speed;
+
+    return null;
   }
 
-  public void setNumberPages(int pages) {
+  public Void setNumberPages(Integer pages) {
     numberPages = pages;
     resetSimulator();
+
+    return null;
   }
 
-  public void setNumberFrames(int frames) {
+  public Void setNumberFrames(Integer frames) {
     numberFrames = frames;
     resetSimulator();
+
+    return null;
   }
 
-  public void setTlbSize(int size) {
+  public Void setTlbSize(Integer size) {
     tlbSize = size;
     resetSimulator();
+
+    return null;
   }
 
-  public void setProcessCount(int count) {
+  public Void setProcessCount(Integer count) {
     processCount = count;
     resetSimulator();
+
+    return null;
   }
 
   //player controls
