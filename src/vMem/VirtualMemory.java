@@ -37,6 +37,7 @@ public class VirtualMemory {
 		this.numFrames = numFrames;
 		this.tlbSize = tlbSize;
 		this.curProcess=procList.get(0);
+		curProcess.fillList();
 		this.procList=procList;
 		this.procCount=0;
 		memory=new MEMORY_ENTRY[numFrames];	
@@ -55,12 +56,8 @@ public class VirtualMemory {
 	
 	
 	public void step() {
-		int pageNumber=(int)(Math.random()*numPages);
-		int offset=(int)(Math.random()*PAGE_SIZE);
-		int logicalAddress=pageNumber* PAGE_SIZE + offset;
-		int frameNumber=search_page_table(pageNumber);
-		int physicalAddress=frameNumber*PAGE_SIZE+offset;
-		System.out.println("Logical address "+logicalAddress+" => Physical address "+physicalAddress);
+		int pageNumber=curProcess.pageRef.get(0);
+		search_page_table(pageNumber);
 		System.out.println("Number of TLB hits "+getTlb_hits());
 		System.out.println("Number of Faults "+getPage_faults());
 		System.out.println(printAllPageTable());
@@ -144,6 +141,7 @@ public class VirtualMemory {
 			}
 			
 		}
+		curProcess.pageRef.removeFirst();
 		return frameNumber;
 	}
 	public String printTlb() {
@@ -187,15 +185,15 @@ public class VirtualMemory {
 		return output;
 	}
 	public void updateProc() {
-		procCount++;
-		procCount = procCount%QUANTUM;
-		if(procCount==0) {
+		
+		if(curProcess.pageRef.isEmpty()) {
 			resetTLB();
 			if(procList.indexOf(curProcess)==procList.size()-1) {
 				curProcess=procList.get(0);
 			}else {
 				curProcess=procList.get(procList.indexOf(curProcess)+1);
 			}
+			curProcess.fillList();
 		}
 	}
 	public void resetTLB() {
