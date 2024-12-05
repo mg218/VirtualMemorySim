@@ -9,12 +9,10 @@ public class Process {
 	int[] pageTable;
 	int[]invertedPageTable;
 	List<Integer> pageRef = new ArrayList<Integer>();
-	private int quantum;
 	private int numPages;
 	
-	public Process(String id,int numPages,int quantum) {
+	public Process(String id,int numPages) {
 		pID=id;
-		this.quantum=quantum;
 		this.pageTable = new int[numPages];
 		Arrays.fill(pageTable, -1);
 		this.numPages=numPages;
@@ -37,7 +35,7 @@ public class Process {
 	public String getID() {
 		return pID;
 	}
-	public void fillList() {
+	public void fillList(int quantum) {
 		for(int i=0;i<quantum;i++) {
 			pageRef.add((int)(Math.random()*numPages));
 		}

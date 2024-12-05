@@ -18,7 +18,7 @@ public class Driver {
 		int numProcs=sc.nextInt();
 		List<Process> procList = new ArrayList<Process>();
 		for (int i = 0; i < numProcs; i++) {
-			procList.add(new Process("P"+i,noPages,4));
+			procList.add(new Process("P"+i,noPages));
 		}
 		VirtualMemory mmu= new VirtualMemory(noPages,noFrames,tlbSize,procList);
 		

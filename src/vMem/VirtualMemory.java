@@ -37,7 +37,7 @@ public class VirtualMemory {
 		this.numFrames = numFrames;
 		this.tlbSize = tlbSize;
 		this.curProcess=procList.get(0);
-		curProcess.fillList();
+		curProcess.fillList(QUANTUM);
 		this.procList=procList;
 		this.procCount=0;
 		memory=new MEMORY_ENTRY[numFrames];	
@@ -141,7 +141,7 @@ public class VirtualMemory {
 			}
 			
 		}
-		curProcess.pageRef.removeFirst();
+		curProcess.pageRef.remove(0);
 		return frameNumber;
 	}
 	public String printTlb() {
@@ -193,7 +193,7 @@ public class VirtualMemory {
 			}else {
 				curProcess=procList.get(procList.indexOf(curProcess)+1);
 			}
-			curProcess.fillList();
+			curProcess.fillList(QUANTUM);
 		}
 	}
 	public void resetTLB() {
