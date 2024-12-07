@@ -10,12 +10,14 @@ public class Process {
 	int[]invertedPageTable;
 	List<Integer> pageRef = new ArrayList<Integer>();
 	private int numPages;
+	boolean active;
 	
 	public Process(String id,int numPages) {
 		pID=id;
 		this.pageTable = new int[numPages];
 		Arrays.fill(pageTable, -1);
 		this.numPages=numPages;
+		active = false;
 	
 	}
 	

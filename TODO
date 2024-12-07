@@ -1,19 +1,20 @@
 Memory:
-File reading
-Create enums for actions/status 
-Make the step() return a list of events
-Events:
+File reading- NEEDS ATTENTION
+Make the step() return a list of events- DONE
+Events: DONE
  TLB hit/Miss
  Page hit/Fault
  Page saved/Loaded
+ DONE
  
-Getters
- TLB
- Memory
- TLB misses
- Page Faults
+Getters DONE
+ TLB-
+ Memory-
+ TLB misses-
+ Page Faults-
  TLB miss ratio
  Page fault ratio ( create a counter for denominator)
+ Process Active-
  
  
 -------------------------------------------

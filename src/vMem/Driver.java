@@ -23,7 +23,7 @@ public class Driver {
 		VirtualMemory mmu= new VirtualMemory(noPages,noFrames,tlbSize,procList);
 		
 		
-		for(int i=0;i<10;i++) {
+		for(int i=0;i<100;i++) {
 			mmu.step();
 		} 
 	}
