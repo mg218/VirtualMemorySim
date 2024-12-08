@@ -1,10 +1,12 @@
 package gui;
 
+import vMem.FileHandler;
 import vMem.SimulatorThread;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.function.Function;
 
 public class MemorySimulator implements Runnable {
@@ -47,6 +49,25 @@ public class MemorySimulator implements Runnable {
   private void initMenuBar() {
     JMenuBar menuBar = new JMenuBar();
     memSim.setJMenuBar(menuBar);
+
+    // file menu
+    var mnFile = new JMenu("File");
+    menuBar.add(mnFile);
+
+    var mntmNewSecnarioFile = new JMenuItem("Open config file");
+    mntmNewSecnarioFile.addActionListener((ActionEvent e) -> {
+      var filePath = doFileDialog(System.getProperty("user.home"), FileDialog.LOAD);
+      try {
+        var config = FileHandler.readFile(filePath);
+        player.loadConfig(config);
+
+      } catch (FileNotFoundException fnfe) {
+        JOptionPane.showMessageDialog(memSim, fnfe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+      } catch (IllegalArgumentException iae) {
+        JOptionPane.showMessageDialog(memSim, iae.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+      }
+    });
+    mnFile.add(mntmNewSecnarioFile);
 
     // settings menu
     var mnSettings = new JMenu("Settings");
@@ -99,7 +120,7 @@ public class MemorySimulator implements Runnable {
       }
     };
 
-    if(haveCustom) {
+    if (haveCustom) {
       var mntmCustom = new JMenuItem("Custom...");
       mntmCustom.addActionListener(customListener);
       temp.add(mntmCustom);
@@ -187,5 +208,22 @@ public class MemorySimulator implements Runnable {
   // gets user input and returns it
   private String doInputDialog(String message) {
     return (String) JOptionPane.showInputDialog(memSim, message, "");
+  }
+
+  // creates a file diaglog and returns a String of what the uer selected or it's
+  // empty
+  private String doFileDialog(String dir, int mode) {
+    var fd = new FileDialog(memSim, "Choose a file", mode);
+    fd.setDirectory(dir);
+    fd.setFile("*.txt");
+    fd.setVisible(true);
+    String filename = fd.getFile();
+    if (filename == null) {
+      System.out.println("You cancelled the choice");
+      return "";
+    }
+
+    fd.dispose();
+    return fd.getDirectory() + filename;
   }
 }

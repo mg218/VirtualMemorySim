@@ -1,7 +1,6 @@
 package vMem;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import gui.MemoryView;
 import gui.StatisticsView;
@@ -26,6 +25,13 @@ public class SimulatorThread implements Runnable {
   private int numberFrames = 16;
   private int tlbSize = 4;
   private int processCount = 4;
+
+  // finals
+  private static final String invalidConfig = "Invalid Config! ";
+  private static final String notPowerofTwo = " must be a power of 2";
+
+  private static final int[] tlbSizes = { 16, 12, 8, 4 };
+  private static final int[] processCounts = { 8, 4, 2, 1 };
 
   public SimulatorThread(TLBView tv, MemoryView mv, StatisticsView sv) {
     tlbView = tv;
@@ -59,6 +65,42 @@ public class SimulatorThread implements Runnable {
   }
 
   // field variable setters
+  public void loadConfig(HashMap<String, Integer> config) {
+    boolean resetNeeded = false;
+
+    if (config.containsKey("NUM_PAGES")) {
+      if (!isPowerOfTwo(config.get("NUM_PAGES")))
+        throw new IllegalArgumentException(invalidConfig + "Number of pages" + notPowerofTwo);
+      numberPages = config.get("NUM_PAGES");
+      resetNeeded = true;
+    }
+
+    if (config.containsKey("NUM_FRAMES")) {
+      if (!isPowerOfTwo(config.get("NUM_FRAMES")))
+        throw new IllegalArgumentException(invalidConfig + "Number of frames" + notPowerofTwo);
+      numberFrames = config.get("NUM_FRAMES");
+      resetNeeded = true;
+    }
+
+    if (config.containsKey("NUM_PAGES")) {
+      var size = config.get("NUM_TLB_ENTRIES");
+      if (!Arrays.stream(tlbSizes).anyMatch(x -> x == size))
+        throw new IllegalArgumentException(invalidConfig + "The number of TLB entries must be either 4, 8, 12 or 16");
+      tlbSize = size;
+      resetNeeded = true;
+    }
+
+    if (config.containsKey("NUM_PROCS")) {
+      var count = config.get("NUM_PROCS");
+      if (!Arrays.stream(processCounts).anyMatch(x -> x == count))
+        throw new IllegalArgumentException(invalidConfig + "The number of processes must be either 1, 2, 4 or 8");
+      processCount = count;
+      resetNeeded = true;
+    }
+
+    if(resetNeeded)
+      resetSimulator();
+  }
 
   public Void setSpeed(Integer speed) {
     speedMS = speed;
@@ -68,7 +110,7 @@ public class SimulatorThread implements Runnable {
 
   public Void setNumberPages(Integer pages) throws IllegalArgumentException {
     if (!isPowerOfTwo(pages))
-      throw new IllegalArgumentException("Number of pages must be a power of 2");
+      throw new IllegalArgumentException("Number of pages" + notPowerofTwo);
     numberPages = pages;
     resetSimulator();
 
@@ -77,7 +119,7 @@ public class SimulatorThread implements Runnable {
 
   public Void setNumberFrames(Integer frames) throws IllegalArgumentException {
     if (!isPowerOfTwo(frames))
-      throw new IllegalArgumentException("Number of frames must be a power of 2");
+      throw new IllegalArgumentException("Number of frames" + notPowerofTwo);
     numberFrames = frames;
     resetSimulator();
 
