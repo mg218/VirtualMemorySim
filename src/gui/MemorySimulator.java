@@ -53,19 +53,19 @@ public class MemorySimulator implements Runnable {
     menuBar.add(mnSettings);
 
     String[] speedDefaults = { "1000 ms", "100 ms" };
-    mnSettings.add(generateSubMenu("Speed", player::setSpeed, speedDefaults));
+    mnSettings.add(generateSubMenu("Speed", player::setSpeed, speedDefaults, true));
 
     String[] pageDefaults = { "128", "64", "32" };
-    mnSettings.add(generateSubMenu("Pages", player::setNumberPages, pageDefaults));
+    mnSettings.add(generateSubMenu("Pages", player::setNumberPages, pageDefaults, true));
 
     String[] frameDefaults = { "32", "16" };
-    mnSettings.add(generateSubMenu("Frames", player::setNumberFrames, frameDefaults));
+    mnSettings.add(generateSubMenu("Frames", player::setNumberFrames, frameDefaults, true));
 
-    String[] tlbDefaults = { "8", "4" };
-    mnSettings.add(generateSubMenu("TLB Size", player::setTlbSize, tlbDefaults));
+    String[] tlbDefaults = { "16", "12", "8", "4" };
+    mnSettings.add(generateSubMenu("TLB Size", player::setTlbSize, tlbDefaults, false));
 
-    String[] processCountDefaults = { "10", "8", "6", "4" };
-    mnSettings.add(generateSubMenu("Pages", player::setProcessCount, processCountDefaults));
+    String[] processCountDefaults = { "8", "4", "2", "1" };
+    mnSettings.add(generateSubMenu("Processes", player::setProcessCount, processCountDefaults, false));
 
     // help menu
     var mnHelp = new JMenu("Help");
@@ -82,7 +82,7 @@ public class MemorySimulator implements Runnable {
 
   // creates a submenu with a Custom option and presets stored in an array
   // presets can have units as long as the first word in the string is number
-  private JMenu generateSubMenu(String name, Function<Integer, Void> func, String[] presets) {
+  private JMenu generateSubMenu(String name, Function<Integer, Void> func, String[] presets, boolean haveCustom) {
     var temp = new JMenu(name);
 
     var customListener = (ActionListener) (ActionEvent e) -> {
@@ -99,9 +99,11 @@ public class MemorySimulator implements Runnable {
       }
     };
 
-    var mntmCustom = new JMenuItem("Custom...");
-    mntmCustom.addActionListener(customListener);
-    temp.add(mntmCustom);
+    if(haveCustom) {
+      var mntmCustom = new JMenuItem("Custom...");
+      mntmCustom.addActionListener(customListener);
+      temp.add(mntmCustom);
+    }
 
     for (int i = 0; i < presets.length; i++) {
       var mntmPreset = new JMenuItem(presets[i]);
