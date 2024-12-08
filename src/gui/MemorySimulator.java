@@ -30,6 +30,7 @@ public class MemorySimulator implements Runnable {
     memSim.setVisible(true);
   }
 
+  // main simulator constructor, begin gui and simulator thread
   public MemorySimulator() {
     memSim = new JFrame();
     memSim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // kill JVM if this frame dies

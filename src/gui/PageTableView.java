@@ -37,26 +37,23 @@ public class PageTableView extends JPanel {
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
 
-    //draw TLB label
+    // draw TLB label
     int labelHeight = getHeight() / 8;
     g.drawRect(3, 2, getWidth() - 6, labelHeight);
 
     Font font = new Font("Arial", Font.PLAIN, 3 * labelHeight / 4);
     g.setFont(font);
-    
-    if(allProcesses == null) {
+
+    if (allProcesses == null) {
       g.drawString("Current Page Table", 8, labelHeight - labelHeight / 4);
       return;
     }
-    
-    //find the process with active set on it
-    Process activeProcess = allProcesses.stream()
-    .filter(p -> p.getActive())
-    .findFirst()
-    .orElse(allProcesses.get(0));
-    
+
+    // find the process with active set on it
+    Process activeProcess = allProcesses.stream().filter(p -> p.getActive()).findFirst().orElse(allProcesses.get(0));
+
     g.drawString("Current Page Table: " + activeProcess.getID(), 8, labelHeight - labelHeight / 4);
-    
+
     int[] pageTable = activeProcess.getPageTable();
 
     // calc columns needed by making smallest square size
@@ -80,6 +77,7 @@ public class PageTableView extends JPanel {
     }
   }
 
+  // draw a single page table frame with its number and its content
   private void paintMemoryFrame(Graphics g, int framePointer, int[] pageTable, int x, int y, int sizeX, int sizeY) {
     Font font = new Font("Arial", Font.PLAIN, sizeY / 2);
     g.setFont(font);
@@ -87,7 +85,8 @@ public class PageTableView extends JPanel {
     g.drawRect(x, y, sizeX, sizeY);
     if (framePointer < pageTable.length) {
       var frame = pageTable[framePointer];
-      g.drawString(Integer.toString(framePointer) + ": " + ((frame == -1) ? "invalid" : Integer.toString(frame)), x + 4, y + 3 * sizeY / 4);
+      g.drawString(Integer.toString(framePointer) + ": " + ((frame == -1) ? "invalid" : Integer.toString(frame)), x + 4,
+          y + 3 * sizeY / 4);
     }
   }
 }

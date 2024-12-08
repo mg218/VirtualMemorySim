@@ -49,14 +49,14 @@ public class ProcessTableModel implements TableModel, Serializable {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		var process = processes.get(rowIndex);
 
-    return switch(columnIndex) {
-      case 0 -> process.getID();
-      default -> (process.getActive()) ? "active" : "sleeping";
-    };
+		return switch (columnIndex) {
+		case 0 -> process.getID();
+		default -> (process.getActive()) ? "active" : "sleeping";
+		};
 	}
 
-  @Override
-  public Class<?> getColumnClass(int columnIndex) {
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 		case 0 -> {
 			return String.class;
@@ -65,7 +65,7 @@ public class ProcessTableModel implements TableModel, Serializable {
 			return Integer.class;
 		}
 		}
-  }
+	}
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {

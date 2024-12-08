@@ -19,6 +19,7 @@ public class TLBView extends JPanel {
     repaint();
   }
 
+  // sets the current TLB array to be viewed in the table
   public void setTLB(TLBEntry[] t) {
     tlb = t;
 
@@ -62,6 +63,7 @@ public class TLBView extends JPanel {
     }
   }
 
+  //draw a singular rectangle from a location on the array
   private void paintTLBFrame(Graphics g, int framePointer, int x, int y, int sizeX, int sizeY) {
     Font font = new Font("Arial", Font.PLAIN, sizeY / 2);
     g.setFont(font);

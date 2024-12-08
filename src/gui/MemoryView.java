@@ -19,7 +19,7 @@ public class MemoryView extends JPanel {
     repaint();
   }
 
-  // sets the current process Objects to be viewed in the table
+  // sets the current Memory array to be viewed in the table
   public void setMemory(MemoryEntry[] m) {
     memory = m;
 
@@ -35,7 +35,7 @@ public class MemoryView extends JPanel {
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
 
-    //draw TLB label
+    // draw TLB label
     int labelHeight = getHeight() / 8;
     g.drawRect(3, 2, getWidth() - 6, labelHeight);
 
@@ -64,6 +64,7 @@ public class MemoryView extends JPanel {
     }
   }
 
+  //draw a singular rectangle from a location on the array
   private void paintMemoryFrame(Graphics g, int framePointer, int x, int y, int sizeX, int sizeY) {
     Font font = new Font("Arial", Font.PLAIN, sizeY / 2);
     g.setFont(font);

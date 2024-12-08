@@ -39,7 +39,9 @@ public class SimulatorThread implements Runnable {
   private static final int[] tlbSizes = { 16, 12, 8, 4 };
   private static final int[] processCounts = { 8, 4, 2, 1 };
 
-  public SimulatorThread(TLBView tv, ProcessTableModel pm, MemoryView mv, PageTableView ptv, StatisticsView sv, EventLog log) {
+  // simulator thread for managing the simulator away from the gui
+  public SimulatorThread(TLBView tv, ProcessTableModel pm, MemoryView mv, PageTableView ptv, StatisticsView sv,
+      EventLog log) {
     tlbView = tv;
     processModel = pm;
     statsView = sv;
@@ -54,6 +56,7 @@ public class SimulatorThread implements Runnable {
     thread.start();
   }
 
+  //main run command, infinite loop that pauses or doesn't, steps are ran when it isn't and independently
   @Override
   public synchronized void run() {
     while (true) {
@@ -74,6 +77,7 @@ public class SimulatorThread implements Runnable {
   }
 
   // field variable setters
+  //load a config hashmap, easily extensible to other options if needed
   public void loadConfig(HashMap<String, Integer> config) {
     boolean resetNeeded = false;
 
@@ -107,7 +111,7 @@ public class SimulatorThread implements Runnable {
       resetNeeded = true;
     }
 
-    if(resetNeeded)
+    if (resetNeeded)
       resetSimulator();
   }
 
@@ -150,7 +154,7 @@ public class SimulatorThread implements Runnable {
   }
 
   // player controls
-
+  //begin playing the simulator, checks the thread status and executes accordingly
   public void play() {
     paused = false;
 
@@ -173,14 +177,16 @@ public class SimulatorThread implements Runnable {
   }
 
   // private methods
-
+  //seperate synchronized function to prevent gui from stalling waiting for current wait() to end
   private synchronized void unpause() {
     notify();
   }
 
+  //runs the simulator 1 page reference forward
+  //gathers the events and prints them, and updates the views
   private void stepSimulator() {
     var events = mmu.step();
-    for(var event : events) {
+    for (var event : events) {
       log.addEvent(event);
     }
     // refresh listeners with new data
@@ -192,6 +198,7 @@ public class SimulatorThread implements Runnable {
         mmu.getPageFaultRatio(), mmu.getDiskAccess());
   }
 
+  //resets the simulator to its initial state
   private void resetSimulator() {
     // reset thread variables
     paused = true;
@@ -207,6 +214,7 @@ public class SimulatorThread implements Runnable {
     processModel.setProcesses(allProcesses);
     memoryView.setMemory(mmu.getMemory());
     pageTableView.setProcesses(allProcesses);
+    log.clear();
   }
 
   private boolean isPowerOfTwo(int n) {
