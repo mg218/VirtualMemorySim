@@ -61,6 +61,9 @@ public class VirtualMemory {
 	
 	
 	public List<ProcessEvent> step() {
+		if(curProcess.pageRef.size()==QUANTUM) {
+			resetTLB();
+		}
 		pagerefs++;
 		List<ProcessEvent> events= new ArrayList<>();
 		int page_number = curProcess.pageRef.get(0);
@@ -79,6 +82,7 @@ public class VirtualMemory {
 				System.out.println("Page hit: The page "+ page_number+ " has been loaded into the frame "+ frameNumber);
 				page_hits++;
 				events.add(new ProcessEvent(curProcess,type.PAGEHIT,page_number,frameNumber));
+				//update_tlb(page_number,frame);
 			}else {//Page Fault
 				page_faults++;
 				events.add(new ProcessEvent(curProcess,type.PAGEFAULT,page_number,frameNumber));
@@ -200,7 +204,7 @@ public class VirtualMemory {
 	public void updateProc() {
 		
 		if(curProcess.pageRef.isEmpty()) {
-			resetTLB();
+			
 			oldProc=curProcess;
 			if(procList.indexOf(curProcess)==procList.size()-1) {
 				curProcess=procList.get(0);
