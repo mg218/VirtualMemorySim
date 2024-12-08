@@ -34,5 +34,13 @@ public class TLB_Entry {
 	public void setValid(boolean valid) {
 		this.valid = valid;
 	}
+
+	@Override
+	public String toString() {
+		if(!valid)
+			return "invalid";
+
+		return pageNumber + ":" + frameNumber;
+	}
 } 
 
