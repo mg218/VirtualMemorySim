@@ -33,20 +33,28 @@ public class TLBView extends JPanel {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
+    //draw TLB label
+    int labelHeight = getHeight() / 6;
+    g.drawRect(2, 2, getWidth() - 5, labelHeight);
+
+    Font font = new Font("Arial", Font.PLAIN, 3 * labelHeight / 4);
+    g.setFont(font);
+    g.drawString("TLB", getWidth() / 2 - 10, labelHeight - labelHeight / 4);
+
     // calc columns needed by making smallest square size
     int columns = (int) Math.ceil(Math.sqrt(tlb.length));
     // calc how many rows we really need for the memory size
     int rows = (int) Math.ceil(tlb.length / (double) columns);
 
     int sizeX = (getWidth() - 4) / columns;
-    int sizeY = (getHeight() - 4) / rows;
+    int sizeY = (getHeight() - labelHeight - 4) / rows;
 
     int x = getWidth() / 2 - sizeX * columns / 2;
     for (int column = 0; column < columns; column++) {
-      int y = getHeight() / 2 - sizeY * rows / 2;
+      int y = (getHeight() - labelHeight) / 2 - sizeY * rows / 2;
       for (int row = 0; row < rows; row++) {
         var framePointer = columns * row + column;
-        paintTLBFrame(g, framePointer, x, y, sizeX, sizeY);
+        paintTLBFrame(g, framePointer, x, y + labelHeight, sizeX, sizeY);
 
         y += sizeY;
       }
