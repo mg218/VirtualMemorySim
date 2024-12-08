@@ -3,14 +3,23 @@ package vMem;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.MemoryView;
+import gui.StatisticsView;
+import gui.TLBView;
+
 public class SimulatorThread implements Runnable {
-  //thread managment fields
+  // thread managment fields
   private final Thread thread;
   private int speedMS = 1000;
   private boolean paused = true;
   private boolean done = false;
 
-  //simulator fields
+  // gui listener fields
+  private TLBView tlbView;
+  private StatisticsView statsView;
+  private MemoryView memoryView;
+
+  // simulator fields
   private VirtualMemory mmu;
   private List<Process> allProcesses;
   private int numberPages = 32;
@@ -18,10 +27,14 @@ public class SimulatorThread implements Runnable {
   private int tlbSize = 4;
   private int processCount = 4;
 
-  public SimulatorThread() {
+  public SimulatorThread(TLBView tv, MemoryView mv, StatisticsView sv) {
+    tlbView = tv;
+    statsView = sv;
+    memoryView = mv;
+
     resetSimulator();
 
-    //create and start ourselves
+    // create and start ourselves
     thread = new Thread(this);
     thread.start();
   }
@@ -45,7 +58,7 @@ public class SimulatorThread implements Runnable {
     }
   }
 
-  //field variable setters
+  // field variable setters
 
   public Void setSpeed(Integer speed) {
     speedMS = speed;
@@ -81,17 +94,17 @@ public class SimulatorThread implements Runnable {
     return null;
   }
 
-  //player controls
+  // player controls
 
   public void play() {
-		paused = false;
+    paused = false;
 
-		switch (thread.getState()) {
-		case WAITING -> unpause();
-		case TIMED_WAITING, RUNNABLE -> {
-		} // do nothing
-		default -> throw new IllegalArgumentException("Unexpected value: " + thread.getState());
-		}
+    switch (thread.getState()) {
+    case WAITING -> unpause();
+    case TIMED_WAITING, RUNNABLE -> {
+    } // do nothing
+    default -> throw new IllegalArgumentException("Unexpected value: " + thread.getState());
+    }
   }
 
   public void pause() {
@@ -99,31 +112,38 @@ public class SimulatorThread implements Runnable {
   }
 
   public void step() {
-		if (!done && paused) {
-			stepSimulator();
-		}
+    if (!done && paused) {
+      stepSimulator();
+    }
   }
 
-  //private methods
+  // private methods
 
-	private synchronized void unpause() {
-		notify();
-	}
+  private synchronized void unpause() {
+    notify();
+  }
 
   private void stepSimulator() {
     mmu.step();
+    // refresh listeners with new data
+    tlbView.refresh();
+    memoryView.refresh();
+    statsView.refresh(mmu.getPageReferences(), mmu.getTLBMisses(), mmu.getPageFaults(), mmu.getTLBHitRatio(),
+        mmu.getPageFaultRatio(), mmu.getDiskAccess());
   }
 
   private void resetSimulator() {
-    //reset thread variables
+    // reset thread variables
     paused = true;
     done = false;
-    //create new list of processes
+    // create new list of processes
     allProcesses = new ArrayList<Process>();
     for (int i = 0; i < processCount; i++) {
-      allProcesses.add( new Process("P" + i, numberPages));
+      allProcesses.add(new Process("P" + i, numberPages));
     }
-    //setup new mmu
+    // setup new mmu
     mmu = new VirtualMemory(numberPages, numberFrames, tlbSize, allProcesses);
+    tlbView.setTLB(mmu.getTLB());
+    memoryView.setMemory(mmu.getMemory());
   }
 }

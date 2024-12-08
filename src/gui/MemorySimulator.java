@@ -9,9 +9,12 @@ import java.util.function.Function;
 
 public class MemorySimulator implements Runnable {
 
-  JFrame memSim;
+  private JFrame memSim;
   private PlayerControls controls;
   private SimulatorThread player;
+  private TLBView tlbView;
+  private StatisticsView statsView;
+  private MemoryView memoryView;
 
   public static void main(String[] args) {
     EventQueue.invokeLater(new MemorySimulator());
@@ -26,15 +29,18 @@ public class MemorySimulator implements Runnable {
     memSim = new JFrame();
     memSim.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // kill JVM if this frame dies
     memSim.setLayout(new GridBagLayout());
-
     memSim.setTitle("Memory Simulator");
 
-    player = new SimulatorThread();
-
-    initMenuBar();
+    initTLBTable();
+    initStatsView();
+    initMemoryTable();
     initControls();
 
-    memSim.setSize(800, 600);
+    player = new SimulatorThread(tlbView, memoryView, statsView);
+
+    initMenuBar();
+
+    memSim.setMinimumSize(new Dimension(800, 450));
     memSim.setLocationRelativeTo(null); // move us to center of the sceen
   }
 
@@ -109,6 +115,48 @@ public class MemorySimulator implements Runnable {
     return temp;
   }
 
+  private void initTLBTable() {
+    tlbView = new TLBView();
+
+    var tlbTableConstraints = new GridBagConstraints();
+    tlbTableConstraints.gridx = 0;
+    tlbTableConstraints.gridy = 0;
+    tlbTableConstraints.gridwidth = 1;
+    tlbTableConstraints.gridheight = 1;
+    tlbTableConstraints.fill = GridBagConstraints.BOTH;
+    tlbTableConstraints.weightx = 1.0;
+    tlbTableConstraints.weighty = 1.0;
+    memSim.add(tlbView, tlbTableConstraints);
+  }
+
+  private void initStatsView() {
+    statsView = new StatisticsView();
+
+    var statsViewConstraints = new GridBagConstraints();
+    statsViewConstraints.gridx = 1;
+    statsViewConstraints.gridy = 0;
+    statsViewConstraints.gridwidth = 1;
+    statsViewConstraints.gridheight = 1;
+    statsViewConstraints.fill = GridBagConstraints.BOTH;
+    statsViewConstraints.weightx = 2.0;
+    statsViewConstraints.weighty = 1.0;
+    memSim.add(statsView, statsViewConstraints);
+  }
+
+  private void initMemoryTable() {
+    memoryView = new MemoryView();
+
+    var memoryTableConstraints = new GridBagConstraints();
+    memoryTableConstraints.gridx = 0;
+    memoryTableConstraints.gridy = 1;
+    memoryTableConstraints.gridwidth = 2;
+    memoryTableConstraints.gridheight = 2;
+    memoryTableConstraints.fill = GridBagConstraints.BOTH;
+    memoryTableConstraints.weightx = 1.0;
+    memoryTableConstraints.weighty = 1.0;
+    memSim.add(memoryView, memoryTableConstraints);
+  }
+
   private void initControls() {
     var controlsListener = (ActionListener) (ActionEvent e) -> {
       controlsAction((JButton) e.getSource());
@@ -116,8 +164,8 @@ public class MemorySimulator implements Runnable {
     controls = new PlayerControls(controlsListener);
     var constraints = new GridBagConstraints();
     constraints.gridx = 0;
-    constraints.gridy = 4;
-    constraints.gridwidth = 3;
+    constraints.gridy = 3;
+    constraints.gridwidth = 2;
     constraints.gridheight = 1;
     constraints.fill = GridBagConstraints.NONE;
     constraints.weightx = 0.0;
