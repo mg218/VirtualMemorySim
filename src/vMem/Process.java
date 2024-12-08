@@ -7,7 +7,6 @@ import java.util.List;
 public class Process {
 	private String pID;
 	int[] pageTable;
-	int[]invertedPageTable;
 	List<Integer> pageRef = new ArrayList<Integer>();
 	private int numPages;
 	boolean active;
@@ -41,6 +40,10 @@ public class Process {
 		for(int i=0;i<quantum;i++) {
 			pageRef.add((int)(Math.random()*numPages));
 		}
+	}
+	
+	public int[] getPageTable() {
+		return pageTable;
 	}
 	public boolean getActive() {
 		return active;

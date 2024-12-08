@@ -178,7 +178,7 @@ public class SimulatorThread implements Runnable {
     tlbView.refresh();
     processModel.refresh();
     memoryView.refresh();
-    statsView.refresh(mmu.getPageReferences(), mmu.getTLBMisses(), mmu.getPageFaults(), mmu.getTLBHitRatio(),
+    statsView.refresh(mmu.getPageReferences(), mmu.getTLBMisses(), mmu.getPageFaults(), mmu.getTLBMissRatio(),
         mmu.getPageFaultRatio(), mmu.getDiskAccess());
   }
 

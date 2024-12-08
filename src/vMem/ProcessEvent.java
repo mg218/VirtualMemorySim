@@ -1,14 +1,14 @@
 package vMem;
 
 public class ProcessEvent {
-	public enum type {
+	public enum type {//Different possible types of events
 		TLBHIT, TLBMISS, PAGEHIT, PAGEFAULT, LOAD, SAVE
 	};
 
 	public ProcessEvent.type event;
 	public Process process;
 	public int pageNum, frameNum;
-
+	//Contrtuctor
 	public ProcessEvent(Process p, ProcessEvent.type t, int pageNum, int frameNum) {
 		event = t;
 		process = p;
@@ -17,7 +17,7 @@ public class ProcessEvent {
 	}
 
 	@Override
-	public String toString() {
+	public String toString() {//Output a messages based on event that happened
 		String action;
 		switch (this.event) {
 		case TLBHIT:

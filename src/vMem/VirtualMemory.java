@@ -22,15 +22,14 @@ public class VirtualMemory {
 	private int page_hits=0;
 	private int tlb_hits = 0; // number of TLB hits
 	private int pagerefs=0;//counts the times step() has been called
-	private MemoryEntry[] memory; 
+	private MemoryEntry[] memory; //Stores the memory frame information
 	public static final int QUANTUM=4;
-	public Process oldProc;
+	public Process oldProc;//Stores
 	public int disk_access=0;
 
 
 	// constructor
 	public VirtualMemory(int numPages, int numFrames, int tlbSize,List<Process> procList) {
-		// TODO: add code below
 		this.numPages = numPages;
 		this.numFrames = numFrames;
 		this.tlbSize = tlbSize;
@@ -52,9 +51,9 @@ public class VirtualMemory {
 	}
 	
 	
-	
+	//Goes through one step of process and returns a list of events that happened to display for GUI
 	public List<ProcessEvent> step() {
-		if(curProcess.pageRef.size()==QUANTUM) {
+		if(curProcess.pageRef.size()==QUANTUM) {//Reset the TLB if switched to a new Process
 			resetTLB();
 		}
 		pagerefs++;
@@ -96,7 +95,7 @@ public class VirtualMemory {
 				curProcess.pageTable[page_number]=frame;
 				memory[frame].val=page_number;
 				memory[frame].proc=curProcess;
-				for(Process p: procList) {
+				for(Process p: procList) {//Loop through processes and get rid of other references to the target frame
 					for(int i=0;i<p.pageTable.length;i++) {
 						if(p==curProcess) {
 							if(i!=page_number) {
@@ -120,7 +119,7 @@ public class VirtualMemory {
 			}
 			
 		}
-		curProcess.pageRef.remove(0);
+		curProcess.pageRef.remove(0);//remove first item in page reference list
 		System.out.println("Number of TLB hits "+getTLBHits());
 		System.out.println("Number of Faults "+getPageFaults());
 		System.out.println(printAllPageTable());
@@ -132,7 +131,6 @@ public class VirtualMemory {
 
 	// search if page number in tlb or not
 	private int search_tlb(int pageNumber) {
-		// TODO: add code below
 		for (int i = 0; i < tlb.length; i++) {
 			if (tlb[i].getPageNumber() == pageNumber)
 				return tlb[i].getFrameNumber();
@@ -144,7 +142,6 @@ public class VirtualMemory {
 	// Updates the tlb so that it now contains a mapping of the specified
 	// page number to frame number
 	void update_tlb(int page_number, int frame_number) {
-		// TODO: add code below
 		tlb[next_free_tlb_index].setPageNumber(page_number);
 		tlb[next_free_tlb_index].setFrameNumber(frame_number);
 		tlb[next_free_tlb_index].setValid(true);
@@ -174,7 +171,7 @@ public class VirtualMemory {
 		return output;
 		
 	}
-	public String printMem() {
+	public String printMem() {//
 		String output="Memory table: \nFrame#: ";
 		for(int i=0;i<memory.length;i++) {
 			output+= i+" ";
@@ -210,7 +207,7 @@ public class VirtualMemory {
 		}
 		
 	}
-	public void resetTLB() {
+	public void resetTLB() {//Resets the TLB when switching processes
 		next_free_tlb_index=0;
 		for(TLBEntry e:tlb) {
 			e.setFrameNumber(-1);
@@ -218,6 +215,7 @@ public class VirtualMemory {
 			e.setValid(false);
 		}
 	}
+	//Getters
 	public TLBEntry[] getTLB() {
 		return tlb;
 	}
@@ -246,9 +244,9 @@ public class VirtualMemory {
 		}
 		return actives;
 	}
-	public double getTLBHitRatio() {
+	public double getTLBMissRatio() {
 		double hits = (double)(tlb_hits);
-		return hits/pagerefs;
+		return 1-(hits/pagerefs);
 	}
 	public int getPageReferences() {
 		return pagerefs;

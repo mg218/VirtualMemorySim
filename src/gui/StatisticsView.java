@@ -8,7 +8,7 @@ public class StatisticsView extends JPanel {
   private final String pageReferencesFormat = "Page References: %d";
   private final String tlbMissesFormat = "TLB misses: %d";
   private final String pageFaultsFormat = "Page Faults: %d";
-  private final String tlbRatioFormat = "TLB ratio: %.2f";
+  private final String tlbRatioFormat = "TLB miss ratio: %.2f";
   private final String pageFaultRatioFormat = "Mem ratio: %.2f";
   private final String diskAccessesFormat = "disk accesses: %d";
 
