@@ -15,6 +15,7 @@ public class MemorySimulator implements Runnable {
   private PlayerControls controls;
   private SimulatorThread player;
   private TLBView tlbView;
+  private ProcessTableModel processModel;
   private StatisticsView statsView;
   private MemoryView memoryView;
 
@@ -34,11 +35,12 @@ public class MemorySimulator implements Runnable {
     memSim.setTitle("Memory Simulator");
 
     initTLBTable();
+    initProcessTable();
     initStatsView();
     initMemoryTable();
     initControls();
 
-    player = new SimulatorThread(tlbView, memoryView, statsView);
+    player = new SimulatorThread(tlbView, processModel, memoryView, statsView);
 
     initMenuBar();
 
@@ -152,11 +154,27 @@ public class MemorySimulator implements Runnable {
     memSim.add(tlbView, tlbTableConstraints);
   }
 
+  private void initProcessTable() {
+    processModel = new ProcessTableModel();
+
+    var table = new JTable(processModel);
+
+    var processTableConstraints = new GridBagConstraints();
+    processTableConstraints.gridx = 1;
+    processTableConstraints.gridy = 0;
+    processTableConstraints.gridwidth = 1;
+    processTableConstraints.gridheight = 1;
+    processTableConstraints.fill = GridBagConstraints.BOTH;
+    processTableConstraints.weightx = .5;
+    processTableConstraints.weighty = 1.0;
+    memSim.add(new JScrollPane(table), processTableConstraints);
+  }
+
   private void initStatsView() {
     statsView = new StatisticsView();
 
     var statsViewConstraints = new GridBagConstraints();
-    statsViewConstraints.gridx = 1;
+    statsViewConstraints.gridx = 2;
     statsViewConstraints.gridy = 0;
     statsViewConstraints.gridwidth = 1;
     statsViewConstraints.gridheight = 1;
@@ -172,7 +190,7 @@ public class MemorySimulator implements Runnable {
     var memoryTableConstraints = new GridBagConstraints();
     memoryTableConstraints.gridx = 0;
     memoryTableConstraints.gridy = 1;
-    memoryTableConstraints.gridwidth = 2;
+    memoryTableConstraints.gridwidth = 3;
     memoryTableConstraints.gridheight = 2;
     memoryTableConstraints.fill = GridBagConstraints.BOTH;
     memoryTableConstraints.weightx = 1.0;
@@ -188,7 +206,7 @@ public class MemorySimulator implements Runnable {
     var constraints = new GridBagConstraints();
     constraints.gridx = 0;
     constraints.gridy = 3;
-    constraints.gridwidth = 2;
+    constraints.gridwidth = 3;
     constraints.gridheight = 1;
     constraints.fill = GridBagConstraints.NONE;
     constraints.weightx = 0.0;

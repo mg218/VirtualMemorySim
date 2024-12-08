@@ -3,6 +3,7 @@ package vMem;
 import java.util.*;
 
 import gui.MemoryView;
+import gui.ProcessTableModel;
 import gui.StatisticsView;
 import gui.TLBView;
 
@@ -15,6 +16,7 @@ public class SimulatorThread implements Runnable {
 
   // gui listener fields
   private TLBView tlbView;
+  private ProcessTableModel processModel;
   private StatisticsView statsView;
   private MemoryView memoryView;
 
@@ -33,8 +35,9 @@ public class SimulatorThread implements Runnable {
   private static final int[] tlbSizes = { 16, 12, 8, 4 };
   private static final int[] processCounts = { 8, 4, 2, 1 };
 
-  public SimulatorThread(TLBView tv, MemoryView mv, StatisticsView sv) {
+  public SimulatorThread(TLBView tv, ProcessTableModel pm, MemoryView mv, StatisticsView sv) {
     tlbView = tv;
+    processModel = pm;
     statsView = sv;
     memoryView = mv;
 
@@ -173,6 +176,7 @@ public class SimulatorThread implements Runnable {
     mmu.step();
     // refresh listeners with new data
     tlbView.refresh();
+    processModel.refresh();
     memoryView.refresh();
     statsView.refresh(mmu.getPageReferences(), mmu.getTLBMisses(), mmu.getPageFaults(), mmu.getTLBHitRatio(),
         mmu.getPageFaultRatio(), mmu.getDiskAccess());
@@ -190,6 +194,7 @@ public class SimulatorThread implements Runnable {
     // setup new mmu
     mmu = new VirtualMemory(numberPages, numberFrames, tlbSize, allProcesses);
     tlbView.setTLB(mmu.getTLB());
+    processModel.setProcesses(allProcesses);
     memoryView.setMemory(mmu.getMemory());
   }
 
