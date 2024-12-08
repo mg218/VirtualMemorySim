@@ -1,11 +1,11 @@
 package vMem;
-public class TLB_Entry {
+public class TLBEntry {
 	protected int pageNumber;      // store page number
 	protected int frameNumber;     // store the mapped frame number
 	protected boolean valid;       // valid mapping or not
 
 	// constructor method
-	public TLB_Entry(int pageNumber, int frameNumber, boolean valid) {
+	public TLBEntry(int pageNumber, int frameNumber, boolean valid) {
 		this.pageNumber = pageNumber;
 		this.frameNumber = frameNumber;
 		this.valid=valid;

@@ -12,7 +12,6 @@ public class FileHandler {
 				line = sc.nextLine();
 				String[] arr = line.split("=");
 				String key = arr[0].trim();
-
 				int val = Integer.parseInt(arr[1].trim());
 				config.put(key, val);
 			}

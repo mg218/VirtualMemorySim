@@ -6,10 +6,10 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import vMem.MEMORY_ENTRY;
+import vMem.MemoryEntry;
 
 public class MemoryView extends JPanel {
-  MEMORY_ENTRY[] memory;
+  MemoryEntry[] memory;
 
   public MemoryView() {
     super();
@@ -20,7 +20,7 @@ public class MemoryView extends JPanel {
   }
 
   // sets the current process Objects to be viewed in the table
-  public void setMemory(MEMORY_ENTRY[] m) {
+  public void setMemory(MemoryEntry[] m) {
     memory = m;
 
     repaint();

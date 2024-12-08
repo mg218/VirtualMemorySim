@@ -15,14 +15,14 @@ public class VirtualMemory {
 	public int tlbSize; // number of entries in the TLB
 	public List<Process> procList = new ArrayList<Process>();
 	protected Process curProcess;
-	private TLB_Entry[] tlb; // list of TLB entries
+	private TLBEntry[] tlb; // list of TLB entries
 	private int nextLoadLocation = 0; // next frame index to load the new page
 	private int next_free_tlb_index = 0; // index of next free TLB entry
 	private int page_faults = 0; // number of page faults
 	private int page_hits=0;
 	private int tlb_hits = 0; // number of TLB hits
 	private int pagerefs=0;//counts the times step() has been called
-	private MEMORY_ENTRY[] memory; 
+	private MemoryEntry[] memory; 
 	public static final int QUANTUM=4;
 	public Process oldProc;
 	public int disk_access=0;
@@ -45,14 +45,14 @@ public class VirtualMemory {
 		curProcess.active=true;
 		curProcess.fillList(QUANTUM);
 		this.procList=procList;
-		memory=new MEMORY_ENTRY[numFrames];	
+		memory=new MemoryEntry[numFrames];	
 		for(int i=0;i<memory.length;i++) {
-			memory[i]= new MEMORY_ENTRY(null,-1);
+			memory[i]= new MemoryEntry(null,-1);
 		}
 		// set up the TLB
-		tlb = new TLB_Entry[tlbSize];
+		tlb = new TLBEntry[tlbSize];
 		for (int i = 0; i < tlbSize; i++) {
-			tlb[i] = new TLB_Entry(-1, -1, false);
+			tlb[i] = new TLBEntry(-1, -1, false);
 
 		}
 
@@ -82,7 +82,7 @@ public class VirtualMemory {
 				System.out.println("Page hit: The page "+ page_number+ " has been loaded into the frame "+ frameNumber);
 				page_hits++;
 				events.add(new ProcessEvent(curProcess,type.PAGEHIT,page_number,frameNumber));
-				//update_tlb(page_number,frame);
+				update_tlb(page_number,frameNumber);
 			}else {//Page Fault
 				page_faults++;
 				events.add(new ProcessEvent(curProcess,type.PAGEFAULT,page_number,frameNumber));
@@ -163,11 +163,11 @@ public class VirtualMemory {
 
 	public String printTlb() {
 		String output="The TLB currently: \n Page#  ";
-		for(TLB_Entry t:tlb) {
+		for(TLBEntry t:tlb) {
 			output+=t.getPageNumber()+"  ";
 		}
 		output+="\n Frame# ";
-		for(TLB_Entry t:tlb) {
+		for(TLBEntry t:tlb) {
 			output+=t.getFrameNumber()+"  ";
 		}
 		return output;
@@ -187,7 +187,7 @@ public class VirtualMemory {
 			output+= i+" ";
 		}
 		output+="\nProcess: ";
-		for(MEMORY_ENTRY m:memory) {
+		for(MemoryEntry m:memory) {
 			if(m.proc!=null) {
 				output+=m.proc.getID()+" ";
 			}else {
@@ -195,7 +195,7 @@ public class VirtualMemory {
 			}
 		}
 		output+="\nValue: ";
-		for (MEMORY_ENTRY m : memory) {
+		for (MemoryEntry m : memory) {
 			output+=m.val+" ";
 		}
 		
@@ -219,16 +219,16 @@ public class VirtualMemory {
 	}
 	public void resetTLB() {
 		next_free_tlb_index=0;
-		for(TLB_Entry e:tlb) {
+		for(TLBEntry e:tlb) {
 			e.setFrameNumber(-1);
 			e.setPageNumber(-1);
 			e.setValid(false);
 		}
 	}
-	public TLB_Entry[] getTLB() {
+	public TLBEntry[] getTLB() {
 		return tlb;
 	}
-	public MEMORY_ENTRY[] getMemory() {
+	public MemoryEntry[] getMemory() {
 		return memory;
 	}
 	public int getTLBMisses() {

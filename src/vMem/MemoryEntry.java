@@ -1,11 +1,11 @@
 package vMem;
 
-public class MEMORY_ENTRY {
+public class MemoryEntry {
 
 	protected Process proc;
 	protected int val;
 
-	public MEMORY_ENTRY(Process proc, int val) {
+	public MemoryEntry(Process proc, int val) {
 		this.proc = proc;
 		this.val = val;
 	}

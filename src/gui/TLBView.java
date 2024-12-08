@@ -6,10 +6,10 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import vMem.TLB_Entry;
+import vMem.TLBEntry;
 
 public class TLBView extends JPanel {
-  TLB_Entry[] tlb;
+  TLBEntry[] tlb;
 
   public TLBView() {
     super();
@@ -19,7 +19,7 @@ public class TLBView extends JPanel {
     repaint();
   }
 
-  public void setTLB(TLB_Entry[] t) {
+  public void setTLB(TLBEntry[] t) {
     tlb = t;
 
     repaint();
