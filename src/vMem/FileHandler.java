@@ -5,14 +5,10 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class FileHandling {
-	String file;
-	public FileHandling(String fileName) {
-		file=fileName;
-	}
-	public HashMap<String, Integer> readFile() throws FileNotFoundException{
+public class FileHandler {
+	public static HashMap<String, Integer> readFile(String filePath) throws FileNotFoundException{
 		HashMap<String,Integer> config = new HashMap<>();
-		try(Scanner sc = new Scanner(new File(file))){
+		try(Scanner sc = new Scanner(new File(filePath))){
 			String line;
 			while(sc.hasNext()) {
 				line=sc.nextLine();
