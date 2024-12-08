@@ -6,11 +6,11 @@ import javax.swing.JPanel;
 
 public class StatisticsView extends JPanel {
   private final String pageReferencesFormat = "Page References: %d";
-  private final String tlbMissesFormat = "TLB misses: %d";
+  private final String tlbMissesFormat = "TLB Misses: %d";
   private final String pageFaultsFormat = "Page Faults: %d";
-  private final String tlbRatioFormat = "TLB miss ratio: %.2f";
-  private final String pageFaultRatioFormat = "Mem ratio: %.2f";
-  private final String diskAccessesFormat = "disk accesses: %d";
+  private final String tlbRatioFormat = "Miss Ratio: %.2f";
+  private final String pageFaultRatioFormat = "Miss Ratio: %.2f";
+  private final String diskAccessesFormat = "Disk Accesses: %d";
 
   private String pageReferences = String.format(pageReferencesFormat, 0);
   private String tlbMisses = String.format(tlbMissesFormat, 0);

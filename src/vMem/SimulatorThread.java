@@ -2,6 +2,7 @@ package vMem;
 
 import java.util.*;
 
+import gui.EventLog;
 import gui.MemoryView;
 import gui.PageTableView;
 import gui.ProcessTableModel;
@@ -21,6 +22,7 @@ public class SimulatorThread implements Runnable {
   private StatisticsView statsView;
   private MemoryView memoryView;
   private PageTableView pageTableView;
+  private EventLog log;
 
   // simulator fields
   private VirtualMemory mmu;
@@ -37,12 +39,13 @@ public class SimulatorThread implements Runnable {
   private static final int[] tlbSizes = { 16, 12, 8, 4 };
   private static final int[] processCounts = { 8, 4, 2, 1 };
 
-  public SimulatorThread(TLBView tv, ProcessTableModel pm, MemoryView mv, PageTableView ptv, StatisticsView sv) {
+  public SimulatorThread(TLBView tv, ProcessTableModel pm, MemoryView mv, PageTableView ptv, StatisticsView sv, EventLog log) {
     tlbView = tv;
     processModel = pm;
     statsView = sv;
     memoryView = mv;
     pageTableView = ptv;
+    this.log = log;
 
     resetSimulator();
 
@@ -176,7 +179,10 @@ public class SimulatorThread implements Runnable {
   }
 
   private void stepSimulator() {
-    mmu.step();
+    var events = mmu.step();
+    for(var event : events) {
+      log.addEvent(event);
+    }
     // refresh listeners with new data
     tlbView.refresh();
     processModel.refresh();

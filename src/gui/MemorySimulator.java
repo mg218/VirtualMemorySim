@@ -19,6 +19,7 @@ public class MemorySimulator implements Runnable {
   private StatisticsView statsView;
   private MemoryView memoryView;
   private PageTableView pageTableView;
+  private EventLog log;
 
   public static void main(String[] args) {
     EventQueue.invokeLater(new MemorySimulator());
@@ -40,9 +41,10 @@ public class MemorySimulator implements Runnable {
     initStatsView();
     initMemoryTable();
     initPageTable();
+    initEventLog();
     initControls();
 
-    player = new SimulatorThread(tlbView, processModel, memoryView, pageTableView, statsView);
+    player = new SimulatorThread(tlbView, processModel, memoryView, pageTableView, statsView, log);
 
     initMenuBar();
 
@@ -212,6 +214,20 @@ public class MemorySimulator implements Runnable {
     pageTableConstraints.weightx = 1.0;
     pageTableConstraints.weighty = 1.0;
     memSim.add(pageTableView, pageTableConstraints);
+  }
+
+  private void initEventLog() {
+    log = new EventLog();
+
+    var logConstraints = new GridBagConstraints();
+    logConstraints.gridx = 3;
+    logConstraints.gridy = 0;
+    logConstraints.gridwidth = 1;
+    logConstraints.gridheight = 5;
+    logConstraints.fill = GridBagConstraints.BOTH;
+    logConstraints.weightx = 1.0;
+    logConstraints.weighty = 1.0;
+    memSim.add(new JScrollPane(log), logConstraints);
   }
 
   private void initControls() {
