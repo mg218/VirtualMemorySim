@@ -3,6 +3,7 @@ package vMem;
 import java.util.*;
 
 import gui.MemoryView;
+import gui.PageTableView;
 import gui.ProcessTableModel;
 import gui.StatisticsView;
 import gui.TLBView;
@@ -19,6 +20,7 @@ public class SimulatorThread implements Runnable {
   private ProcessTableModel processModel;
   private StatisticsView statsView;
   private MemoryView memoryView;
+  private PageTableView pageTableView;
 
   // simulator fields
   private VirtualMemory mmu;
@@ -35,11 +37,12 @@ public class SimulatorThread implements Runnable {
   private static final int[] tlbSizes = { 16, 12, 8, 4 };
   private static final int[] processCounts = { 8, 4, 2, 1 };
 
-  public SimulatorThread(TLBView tv, ProcessTableModel pm, MemoryView mv, StatisticsView sv) {
+  public SimulatorThread(TLBView tv, ProcessTableModel pm, MemoryView mv, PageTableView ptv, StatisticsView sv) {
     tlbView = tv;
     processModel = pm;
     statsView = sv;
     memoryView = mv;
+    pageTableView = ptv;
 
     resetSimulator();
 
@@ -178,6 +181,7 @@ public class SimulatorThread implements Runnable {
     tlbView.refresh();
     processModel.refresh();
     memoryView.refresh();
+    pageTableView.refresh();
     statsView.refresh(mmu.getPageReferences(), mmu.getTLBMisses(), mmu.getPageFaults(), mmu.getTLBMissRatio(),
         mmu.getPageFaultRatio(), mmu.getDiskAccess());
   }
@@ -196,6 +200,7 @@ public class SimulatorThread implements Runnable {
     tlbView.setTLB(mmu.getTLB());
     processModel.setProcesses(allProcesses);
     memoryView.setMemory(mmu.getMemory());
+    pageTableView.setProcesses(allProcesses);
   }
 
   private boolean isPowerOfTwo(int n) {

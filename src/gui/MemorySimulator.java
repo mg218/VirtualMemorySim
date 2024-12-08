@@ -18,6 +18,7 @@ public class MemorySimulator implements Runnable {
   private ProcessTableModel processModel;
   private StatisticsView statsView;
   private MemoryView memoryView;
+  private PageTableView pageTableView;
 
   public static void main(String[] args) {
     EventQueue.invokeLater(new MemorySimulator());
@@ -38,9 +39,10 @@ public class MemorySimulator implements Runnable {
     initProcessTable();
     initStatsView();
     initMemoryTable();
+    initPageTable();
     initControls();
 
-    player = new SimulatorThread(tlbView, processModel, memoryView, statsView);
+    player = new SimulatorThread(tlbView, processModel, memoryView, pageTableView, statsView);
 
     initMenuBar();
 
@@ -56,8 +58,8 @@ public class MemorySimulator implements Runnable {
     var mnFile = new JMenu("File");
     menuBar.add(mnFile);
 
-    var mntmNewSecnarioFile = new JMenuItem("Open config file");
-    mntmNewSecnarioFile.addActionListener((ActionEvent e) -> {
+    var mntmOpenConfigFile = new JMenuItem("Open config file");
+    mntmOpenConfigFile.addActionListener((ActionEvent e) -> {
       var filePath = doFileDialog(System.getProperty("user.home"), FileDialog.LOAD);
       try {
         var config = FileHandler.readFile(filePath);
@@ -69,7 +71,7 @@ public class MemorySimulator implements Runnable {
         JOptionPane.showMessageDialog(memSim, iae.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
       }
     });
-    mnFile.add(mntmNewSecnarioFile);
+    mnFile.add(mntmOpenConfigFile);
 
     // settings menu
     var mnSettings = new JMenu("Settings");
@@ -165,7 +167,7 @@ public class MemorySimulator implements Runnable {
     processTableConstraints.gridwidth = 1;
     processTableConstraints.gridheight = 1;
     processTableConstraints.fill = GridBagConstraints.BOTH;
-    processTableConstraints.weightx = .5;
+    processTableConstraints.weightx = .4;
     processTableConstraints.weighty = 1.0;
     memSim.add(new JScrollPane(table), processTableConstraints);
   }
@@ -198,6 +200,20 @@ public class MemorySimulator implements Runnable {
     memSim.add(memoryView, memoryTableConstraints);
   }
 
+  private void initPageTable() {
+    pageTableView = new PageTableView();
+
+    var pageTableConstraints = new GridBagConstraints();
+    pageTableConstraints.gridx = 0;
+    pageTableConstraints.gridy = 3;
+    pageTableConstraints.gridwidth = 3;
+    pageTableConstraints.gridheight = 2;
+    pageTableConstraints.fill = GridBagConstraints.BOTH;
+    pageTableConstraints.weightx = 1.0;
+    pageTableConstraints.weighty = 1.0;
+    memSim.add(pageTableView, pageTableConstraints);
+  }
+
   private void initControls() {
     var controlsListener = (ActionListener) (ActionEvent e) -> {
       controlsAction((JButton) e.getSource());
@@ -205,7 +221,7 @@ public class MemorySimulator implements Runnable {
     controls = new PlayerControls(controlsListener);
     var constraints = new GridBagConstraints();
     constraints.gridx = 0;
-    constraints.gridy = 3;
+    constraints.gridy = 5;
     constraints.gridwidth = 3;
     constraints.gridheight = 1;
     constraints.fill = GridBagConstraints.NONE;
