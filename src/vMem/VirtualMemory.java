@@ -21,10 +21,11 @@ public class VirtualMemory {
 	private int page_faults = 0; // number of page faults
 	private int page_hits=0;
 	private int tlb_hits = 0; // number of TLB hits
-	private int steps_taken=0;//counts the times step() has been called
+	private int pagerefs=0;//counts the times step() has been called
 	private MEMORY_ENTRY[] memory; 
 	public static final int QUANTUM=4;
 	public Process oldProc;
+	public int disk_access=0;
 
 	public int getPage_faults() {
 		return page_faults;
@@ -60,7 +61,7 @@ public class VirtualMemory {
 	
 	
 	public List<ProcessEvent> step() {
-		steps_taken++;
+		pagerefs++;
 		List<ProcessEvent> events= new ArrayList<>();
 		int page_number = curProcess.pageRef.get(0);
 		int frameNumber= search_tlb(page_number);
@@ -71,6 +72,7 @@ public class VirtualMemory {
 			
 		}else {//miss
 			//search entry on the page table
+			disk_access++;
 			events.add(new ProcessEvent(curProcess, type.TLBMISS,page_number,frameNumber));
 			frameNumber=curProcess.pageTable[page_number];
 			if(frameNumber>=0) {
@@ -226,7 +228,7 @@ public class VirtualMemory {
 		return memory;
 	}
 	public int getTLBMisses() {
-		return steps_taken-tlb_hits;
+		return pagerefs-tlb_hits;
 	}
 	public int getTLBHits() {
 		return tlb_hits;
@@ -237,6 +239,9 @@ public class VirtualMemory {
 	public int getPageFaults() {
 		return page_faults;
 	}
+	public int getDiskAccess() {
+		return disk_access;
+	}
 	public boolean[] getProcessSate() {
 		boolean[] actives = new boolean[procList.size()];
 		for(int i=0;i<procList.size();i++) {
@@ -246,11 +251,14 @@ public class VirtualMemory {
 	}
 	public double getTLBHitRatio() {
 		double hits = (double)(tlb_hits);
-		return hits/steps_taken;
+		return hits/pagerefs;
+	}
+	public int getPageReferences() {
+		return pagerefs;
 	}
 	public double getPageFaultRatio() {
 		double faults = (double)(page_faults);
-		return faults/steps_taken;
+		return faults/pagerefs;
 	}
 
 	
