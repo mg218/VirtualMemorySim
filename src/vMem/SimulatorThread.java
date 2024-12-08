@@ -66,14 +66,18 @@ public class SimulatorThread implements Runnable {
     return null;
   }
 
-  public Void setNumberPages(Integer pages) {
+  public Void setNumberPages(Integer pages) throws IllegalArgumentException {
+    if (!isPowerOfTwo(pages))
+      throw new IllegalArgumentException("Number of pages must be a power of 2");
     numberPages = pages;
     resetSimulator();
 
     return null;
   }
 
-  public Void setNumberFrames(Integer frames) {
+  public Void setNumberFrames(Integer frames) throws IllegalArgumentException {
+    if (!isPowerOfTwo(frames))
+      throw new IllegalArgumentException("Number of frames must be a power of 2");
     numberFrames = frames;
     resetSimulator();
 
@@ -145,5 +149,9 @@ public class SimulatorThread implements Runnable {
     mmu = new VirtualMemory(numberPages, numberFrames, tlbSize, allProcesses);
     tlbView.setTLB(mmu.getTLB());
     memoryView.setMemory(mmu.getMemory());
+  }
+
+  private boolean isPowerOfTwo(int n) {
+    return (n != 0) && ((n & (n - 1)) == 0);
   }
 }
