@@ -53,6 +53,7 @@ public class VirtualMemory {
 	
 	//Goes through one step of process and returns a list of events that happened to display for GUI
 	public List<ProcessEvent> step() {
+		updateProc();
 		if(curProcess.pageRef.size()==QUANTUM) {//Reset the TLB if switched to a new Process
 			resetTLB();
 		}
@@ -125,7 +126,7 @@ public class VirtualMemory {
 		System.out.println(printAllPageTable());
 		System.out.println(printTlb());
 		System.out.println(printMem());
-		updateProc();
+		
 		return events;
 	}
 
