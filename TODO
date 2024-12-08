@@ -20,10 +20,10 @@ Getters DONE
 -------------------------------------------
 GUI:
 Parts needed to be displayed:
-      Memory/Frames
-      TLB
+      Memory/Frames DONE
+      TLB DONE
       Page Table
       Processes
-      Performance Stats
-         Faults/Hits
-         Ratios
+      Performance Stats DONE
+         Faults/Hits DONE
+         Ratios DONE
