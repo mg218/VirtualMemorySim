@@ -87,7 +87,7 @@ public class PageTableView extends JPanel {
     g.drawRect(x, y, sizeX, sizeY);
     if (framePointer < pageTable.length) {
       var frame = pageTable[framePointer];
-      g.drawString(Integer.toString(framePointer) + ": " + ((frame == -1) ? "invalid" : Integer.toString(frame)), x, y + 3 * sizeY / 4);
+      g.drawString(Integer.toString(framePointer) + ": " + ((frame == -1) ? "invalid" : Integer.toString(frame)), x + 4, y + 3 * sizeY / 4);
     }
   }
 }

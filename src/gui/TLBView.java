@@ -69,7 +69,7 @@ public class TLBView extends JPanel {
     g.drawRect(x, y, sizeX, sizeY);
     if (framePointer < tlb.length) {
       var frame = tlb[framePointer];
-      g.drawString(frame.toString(), x, y + 3 * sizeY / 4);
+      g.drawString(frame.toString(), x + 4, y + 3 * sizeY / 4);
     }
   }
 }

@@ -71,7 +71,7 @@ public class MemoryView extends JPanel {
     g.drawRect(x, y, sizeX, sizeY);
     if (framePointer < memory.length) {
       var frame = memory[framePointer];
-      g.drawString(frame.toString(), x, y + 3 * sizeY / 4);
+      g.drawString(Integer.toString(framePointer) + ": " + frame.toString(), x + 4, y + 3 * sizeY / 4);
     }
   }
 }
