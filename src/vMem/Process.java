@@ -42,5 +42,8 @@ public class Process {
 			pageRef.add((int)(Math.random()*numPages));
 		}
 	}
+	public boolean getActive() {
+		return active;
+	}
 	
 }

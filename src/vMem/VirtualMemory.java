@@ -27,13 +27,6 @@ public class VirtualMemory {
 	public Process oldProc;
 	public int disk_access=0;
 
-	public int getPage_faults() {
-		return page_faults;
-	}
-
-	public int getTlb_hits() {
-		return tlb_hits;
-	}
 
 	// constructor
 	public VirtualMemory(int numPages, int numFrames, int tlbSize,List<Process> procList) {
@@ -128,8 +121,8 @@ public class VirtualMemory {
 			
 		}
 		curProcess.pageRef.remove(0);
-		System.out.println("Number of TLB hits "+getTlb_hits());
-		System.out.println("Number of Faults "+getPage_faults());
+		System.out.println("Number of TLB hits "+getTLBHits());
+		System.out.println("Number of Faults "+getPageFaults());
 		System.out.println(printAllPageTable());
 		System.out.println(printTlb());
 		System.out.println(printMem());
