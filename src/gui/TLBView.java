@@ -39,7 +39,7 @@ public class TLBView extends JPanel {
 
     Font font = new Font("Arial", Font.PLAIN, 3 * labelHeight / 4);
     g.setFont(font);
-    g.drawString("TLB", getWidth() / 2 - 10, labelHeight - labelHeight / 4);
+    g.drawString("TLB", 8, labelHeight - labelHeight / 4);
 
     // calc columns needed by making smallest square size
     int columns = (int) Math.ceil(Math.sqrt(tlb.length));
